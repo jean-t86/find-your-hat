@@ -86,14 +86,37 @@ class PlayerInput {
   }
 }
 
-const myField = new Field([
+const field1 = [
   ['*', '░', 'O'],
   ['░', 'O', '░'],
   ['░', '^', '░'],
-]);
+];
 
-// console.log(myField.print());
-// console.log(PlayerInput.promptDirection());
-console.log(`Move: ${myField.move([0, 1])}`);
-console.log(`Move: ${myField.move([1, 0])}`);
-console.log(myField.print());
+/**
+ * This class represents the game loop and logic.
+ */
+class GameLogic {
+  /**
+   * This method runs the game loop
+   */
+  static run() {
+    const field = new Field(field1);
+    let gameOver = false;
+    while (!gameOver) {
+      field.print();
+
+      switch (field.move(PlayerInput.promptDirection())) {
+        case 'won':
+          console.log('Congratulations! You found your hat.');
+          gameOver = true;
+          break;
+        case 'lost':
+          console.log('Game Over, you\'ve lost.');
+          gameOver = true;
+          break;
+      }
+    }
+  }
+}
+
+GameLogic.run();
