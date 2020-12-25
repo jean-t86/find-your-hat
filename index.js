@@ -1,4 +1,4 @@
-const prompt = require('prompt-sync')({ sigint: true });
+const prompt = require('prompt-sync')({sigint: true});
 
 const hat = '^';
 const hole = 'O';
@@ -15,6 +15,8 @@ class Field {
    */
   constructor(field) {
     this._field = field;
+    this._x = 0;
+    this._y = 0;
   }
 
   /**
@@ -27,6 +29,28 @@ class Field {
         line += this._field[i][j];
       }
       console.log(line);
+    }
+  }
+
+  /**
+   * This method tries to move the player through the field in the chosen.
+   * direction.
+   * @param {array} direction - An array with exactly two elements representing
+   * the x and ytranslation coordinates for the player's movement.
+   * @return {string} Either of three values: moved, won, or lost
+   */
+  move(direction) {
+    this._x += direction[0];
+    this._y += direction[1];
+    const tile = this._field[this._y][this._x];
+    if (tile === hat) {
+      this._field[this._y][this._x] = pathCharacter;
+      return 'won';
+    } else if (tile === fieldCharacter || tile === pathCharacter) {
+      this._field[this._y][this._x] = pathCharacter;
+      return 'moved';
+    } else {
+      return 'lost';
     }
   }
 }
@@ -68,5 +92,8 @@ const myField = new Field([
   ['░', '^', '░'],
 ]);
 
+// console.log(myField.print());
+// console.log(PlayerInput.promptDirection());
+console.log(`Move: ${myField.move([0, 1])}`);
+console.log(`Move: ${myField.move([1, 0])}`);
 console.log(myField.print());
-console.log(PlayerInput.promptDirection());
