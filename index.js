@@ -49,6 +49,8 @@ class Field {
     } else if (tile === fieldCharacter || tile === pathCharacter) {
       this._field[this._y][this._x] = pathCharacter;
       return 'moved';
+    } else if (tile === hole) {
+      return 'fell';
     } else {
       return 'lost';
     }
@@ -110,8 +112,12 @@ class GameLogic {
           console.log('Congratulations! You found your hat.');
           gameOver = true;
           break;
+        case 'fell':
+          console.log('Game Over! You fell into a hole.');
+          gameOver = true;
+          break;
         case 'lost':
-          console.log('Game Over, you\'ve lost.');
+          console.log('Game Over! You are out of bounds.');
           gameOver = true;
           break;
       }
