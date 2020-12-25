@@ -70,43 +70,43 @@ class Field {
    * @return {arrray} A two-dimentional array representing the playing field.
    */
   static generateField(height, width, percentageHoles) {
-    const field = this.initializeField(height, width);
+    const field = Field.initializeField(height, width);
 
-    let randomIndex = this.getRandomIndex(height, width);
-    let x = randomIndex[0];
-    let y = randomIndex[1];
+    const randomIndex = Field.getRandomIndex(height, width);
+    const x = randomIndex[0];
+    const y = randomIndex[1];
     field[y][x] = pathCharacter;
 
-    randomIndex = this.getRandomIndex(height, width);
-    x = randomIndex[0];
-    y = randomIndex[1];
-    do {
-      if (field[y][x] === fieldCharacter) {
-        field[y][x] = hat;
-      } else {
-        randomIndex = this.getRandomIndex(height, width);
-        x = randomIndex[0];
-        y = randomIndex[1];
-      }
-    } while (field[y][x] !== hat);
+    Field.insertTile(hat, height, width, field);
 
     const holesNeeded = Math.floor((percentageHoles / 100) * height * width);
     for (let i = 0; i < holesNeeded; i++) {
-      randomIndex = this.getRandomIndex(height, width);
-      x = randomIndex[0];
-      y = randomIndex[1];
-      do {
-        if (field[y][x] === fieldCharacter) {
-          field[y][x] = hole;
-        } else {
-          randomIndex = this.getRandomIndex(height, width);
-          x = randomIndex[0];
-          y = randomIndex[1];
-        }
-      } while (field[y][x] !== hole);
+      Field.insertTile(hole, height, width, field);
     }
 
     return field;
+  }
+
+  /**
+   * A method to insert a new tile into the field.
+   * @param {string} tile The tile to insert into the field.
+   * @param {number} height The height of the field.
+   * @param {number} width The width of the field.
+   * @param {array} field The playing field.
+   */
+  static insertTile(tile, height, width, field) {
+    let randomIndex = Field.getRandomIndex(height, width);
+    let x = randomIndex[0];
+    let y = randomIndex[1];
+    do {
+      if (field[y][x] === fieldCharacter) {
+        field[y][x] = tile;
+      } else {
+        randomIndex = Field.getRandomIndex(height, width);
+        x = randomIndex[0];
+        y = randomIndex[1];
+      }
+    } while (field[y][x] !== tile);
   }
 
   /**
