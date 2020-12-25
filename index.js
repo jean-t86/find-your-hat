@@ -10,7 +10,7 @@ const pathCharacter = '*';
  */
 class Field {
   /**
-   * 
+   * The class constructor
    * @param {array} field - a two dimentional array representing the playfield.
    */
   constructor(field) {
@@ -31,6 +31,37 @@ class Field {
   }
 }
 
+/**
+ * A class to get the player's input
+ */
+class PlayerInput {
+  /**
+   * @return {array} An array with exactly two elements representing the x and y
+   * translation coordinates for the player's movement.
+   */
+  static promptDirection() {
+    const input = prompt('Enter the direction: ');
+    const direction = [0, 0];
+
+    switch (input) {
+      case 'l':
+        direction[0] = -1;
+        break;
+      case 'r':
+        direction[0] = 1;
+        break;
+      case 'u':
+        direction[1] = -1;
+        break;
+      case 'd':
+        direction[1] = 1;
+        break;
+    }
+
+    return direction;
+  }
+}
+
 const myField = new Field([
   ['*', '░', 'O'],
   ['░', 'O', '░'],
@@ -38,3 +69,4 @@ const myField = new Field([
 ]);
 
 console.log(myField.print());
+console.log(PlayerInput.promptDirection());
