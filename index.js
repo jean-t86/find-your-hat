@@ -9,6 +9,11 @@ const hole = 'O';
 const fieldCharacter = '░';
 const pathCharacter = '*';
 
+const fieldSizeMultiplier = 10;
+const fieldSizeOffset = 5;
+const percentageHolesMultiplier = 40;
+const percentageHolesOffset = 10;
+
 /**
  * A class that represents the playing field.
  */
@@ -31,8 +36,8 @@ class Field {
         this._height,
         this._width,
         pathCharacter);
-    this._x = startNode.col;
-    this._y = startNode.row;
+    this._col = startNode.col;
+    this._row = startNode.row;
   }
 
   /**
@@ -59,20 +64,20 @@ class Field {
    * @return {string} Either of three values: moved, won, or lost.
    */
   move(direction) {
-    this._x += direction[0];
-    this._y += direction[1];
+    this._col += direction[0];
+    this._row += direction[1];
 
-    if (typeof this._field[this._y] === 'undefined') {
+    if (typeof this._field[this._row] === 'undefined') {
       return 'lost';
     }
 
     let gameState = '';
-    const tile = this._field[this._y][this._x];
+    const tile = this._field[this._row][this._col];
     if (tile === hat) {
-      this._field[this._y][this._x] = pathCharacter;
+      this._field[this._row][this._col] = pathCharacter;
       gameState = 'won';
     } else if (tile === fieldCharacter || tile === pathCharacter) {
-      this._field[this._y][this._x] = pathCharacter;
+      this._field[this._row][this._col] = pathCharacter;
       gameState = 'moved';
     } else if (tile === hole) {
       gameState = 'fell';
@@ -138,11 +143,7 @@ class Field {
         hole);
     const path = BreadthFirstSearch.findPath(startNode, goalNode, paths);
 
-    if (path.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return path.length > 0;
   }
 
   /**
@@ -292,9 +293,13 @@ class GameLogic {
    * @return {array} The generated field.
    */
   static generateField() {
-    const height = Math.floor(Math.random() * 10) + 5;
-    const width = Math.floor(Math.random() * 10) + 5;
-    const percentageHoles = Math.floor(Math.random() * 40) + 10;
+    const height = Math.floor(Math.random() * fieldSizeMultiplier) +
+      fieldSizeOffset;
+    const width = Math.floor(Math.random() * fieldSizeMultiplier) +
+      fieldSizeOffset;
+    const percentageHoles = Math.floor(
+        Math.random() * percentageHolesMultiplier,
+    ) + percentageHolesOffset;
     let field = Field.generateField(height, width, percentageHoles);
     while (!Field.validateField(field, height, width)) {
       field = Field.generateField(height, width, percentageHoles);
