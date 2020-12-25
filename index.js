@@ -11,22 +11,28 @@ const pathCharacter = '*';
 class Field {
   /**
    * The class constructor.
-   * @param {array} field - a two dimentional array representing the playfield.
+   * @param {array} field A two dimentional array representing the playfield.
+   * @param {boolean} hardMode When true, a hole is randomly added after 5
+   * turns.
    */
-  constructor(field) {
+  constructor(field, hardMode) {
     this._field = field;
+    this._hardMode = hardMode;
     this._x = 0;
     this._y = 0;
+    this._turnCount = 0;
+    this._height = field.length;
+    this._width = field[0].length;
   }
 
   /**
    * Prints the field to the console.
    */
   print() {
-    for (let y = 0; y < this._field.length; y++) {
+    for (let y = 0; y < this._height; y++) {
       let line = '';
-      for (let x = 0; j < this._field[x].length; x++) {
-        line += this._field[i][j];
+      for (let x = 0; x < this._width; x++) {
+        line += this._field[y][x];
       }
       console.log(line);
     }
@@ -47,18 +53,27 @@ class Field {
       return 'lost';
     }
 
+    let gameState = '';
     const tile = this._field[this._y][this._x];
     if (tile === hat) {
       this._field[this._y][this._x] = pathCharacter;
-      return 'won';
+      gameState = 'won';
     } else if (tile === fieldCharacter || tile === pathCharacter) {
       this._field[this._y][this._x] = pathCharacter;
-      return 'moved';
+      gameState = 'moved';
     } else if (tile === hole) {
-      return 'fell';
+      gameState = 'fell';
     } else {
-      return 'lost';
+      gameState = 'lost';
     }
+
+    if (this._turnCount % 5 === 0 &&
+      (gameState !== 'fell' || gameState !== 'lost')) {
+      Field.insertTile(hole, this._height, this._width, this._field);
+    }
+    this._turnCount++;
+
+    return gameState;
   }
 
   /**
@@ -187,7 +202,7 @@ class GameLogic {
    * This method runs the game loop.
    */
   static run() {
-    const field = new Field(field1);
+    const field = new Field(field1, true);
     let gameOver = false;
     while (!gameOver) {
       field.print();
