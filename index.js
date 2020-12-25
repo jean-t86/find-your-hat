@@ -42,6 +42,11 @@ class Field {
   move(direction) {
     this._x += direction[0];
     this._y += direction[1];
+
+    if (typeof this._field[this._y] === 'undefined') {
+      return 'lost';
+    }
+
     const tile = this._field[this._y][this._x];
     if (tile === hat) {
       this._field[this._y][this._x] = pathCharacter;
@@ -56,7 +61,6 @@ class Field {
     }
   }
 }
-
 /**
  * A class to get the player's input
  */
@@ -66,7 +70,7 @@ class PlayerInput {
    * translation coordinates for the player's movement.
    */
   static promptDirection() {
-    const input = prompt('Enter the direction: ');
+    const input = prompt('Enter the direction (`u`, `d`, `l`, or, `r`): ');
     const direction = [0, 0];
 
     switch (input) {
@@ -89,9 +93,12 @@ class PlayerInput {
 }
 
 const field1 = [
-  ['*', '░', 'O'],
-  ['░', 'O', '░'],
-  ['░', '^', '░'],
+  ['*', '░', 'O', '░', '░', '^'],
+  ['░', '░', 'O', '░', '░', 'O'],
+  ['O', '░', 'O', 'O', '░', '░'],
+  ['░', '░', '░', '░', 'O', '░'],
+  ['░', 'O', 'O', '░', '░', '░'],
+  ['░', '░', '░', '░', '░', '░'],
 ];
 
 /**

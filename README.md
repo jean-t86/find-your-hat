@@ -4,7 +4,7 @@
 * [Project Description](#project-description)
 * [Technologies](#technologies)
 * [Setup](#setup)
-* [Example Output](#example-output)
+* [Playing the game](#playing-the-game)
 
 ## General Information
 This is a practice lab from the [Back-end Engineer path on Codecademy](https://www.codecademy.com/learn/paths/back-end-engineer-career-path). The course teaches all the major technologies and skills that a back-end engineer needs to know.
@@ -32,3 +32,16 @@ In order to run the program, you need to install Node.js on your computer:
 Once installed, install the program's dependencies with `node i` in your terminal with the project's folder as working directory.
 
 You can then run the program by typing `node index.js`.
+
+## Playing the game
+In this game, you need to move the character, represented by `*`, to the hat `^`. 
+
+`O` represent holes and need to be avoided.
+
+When you run the game, a field will be printed out to the console.
+
+You can then enter a direction in which to move:
+* u - up
+* d - down
+* l - left
+* r - right
