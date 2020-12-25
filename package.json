@@ -9,7 +9,8 @@
   "author": "J.Tadebois",
   "license": "ISC",
   "dependencies": {
-    "prompt-sync": "^4.2.0"
+    "prompt-sync": "^4.2.0",
+    "terminal-kit": "^1.44.0"
   },
   "devDependencies": {
     "eslint": "^7.16.0",

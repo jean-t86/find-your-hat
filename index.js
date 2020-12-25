@@ -1,4 +1,5 @@
 const prompt = require('prompt-sync')({sigint: true});
+const terminal = require( 'terminal-kit' ).terminal;
 
 const hat = '^';
 const hole = 'O';
@@ -29,6 +30,9 @@ class Field {
    * Prints the field to the console.
    */
   print() {
+    if (this._turnCount !== 0) {
+      terminal.up(this._height + 1);
+    }
     for (let y = 0; y < this._height; y++) {
       let line = '';
       for (let x = 0; x < this._width; x++) {
