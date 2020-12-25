@@ -1,10 +1,18 @@
 const prompt = require('prompt-sync')({sigint: true});
-const terminal = require( 'terminal-kit' ).terminal;
+const terminal = require('terminal-kit').terminal;
+const Graph = require('./graph.js').Graph;
+const Node = require('./graph.js').Node;
+const BreadthFirstSearch = require('./graph.js').BreadthFirstSearch;
 
 const hat = '^';
 const hole = 'O';
 const fieldCharacter = '░';
 const pathCharacter = '*';
+
+const fieldSizeMultiplier = 10;
+const fieldSizeOffset = 5;
+const percentageHolesMultiplier = 40;
+const percentageHolesOffset = 10;
 
 /**
  * A class that represents the playing field.
@@ -16,14 +24,20 @@ class Field {
    * @param {boolean} hardMode When true, a hole is randomly added after 5
    * turns.
    */
-  constructor(field, hardMode) {
+  constructor(field, hardMode = false) {
     this._field = field;
     this._hardMode = hardMode;
-    this._x = 0;
-    this._y = 0;
     this._turnCount = 0;
     this._height = field.length;
     this._width = field[0].length;
+
+    const startNode = Field.findNodeForTile(
+        field,
+        this._height,
+        this._width,
+        pathCharacter);
+    this._col = startNode.col;
+    this._row = startNode.row;
   }
 
   /**
@@ -50,20 +64,20 @@ class Field {
    * @return {string} Either of three values: moved, won, or lost.
    */
   move(direction) {
-    this._x += direction[0];
-    this._y += direction[1];
+    this._col += direction[0];
+    this._row += direction[1];
 
-    if (typeof this._field[this._y] === 'undefined') {
+    if (typeof this._field[this._row] === 'undefined') {
       return 'lost';
     }
 
     let gameState = '';
-    const tile = this._field[this._y][this._x];
+    const tile = this._field[this._row][this._col];
     if (tile === hat) {
-      this._field[this._y][this._x] = pathCharacter;
+      this._field[this._row][this._col] = pathCharacter;
       gameState = 'won';
     } else if (tile === fieldCharacter || tile === pathCharacter) {
-      this._field[this._y][this._x] = pathCharacter;
+      this._field[this._row][this._col] = pathCharacter;
       gameState = 'moved';
     } else if (tile === hole) {
       gameState = 'fell';
@@ -71,7 +85,8 @@ class Field {
       gameState = 'lost';
     }
 
-    if (this._turnCount % 5 === 0 &&
+    if (this._turnCount !== 0 &&
+      this._turnCount % 5 === 0 &&
       (gameState !== 'fell' || gameState !== 'lost')) {
       Field.insertTile(hole, this._height, this._width, this._field);
     }
@@ -104,6 +119,51 @@ class Field {
     }
 
     return field;
+  }
+
+  /**
+   * Validates whether the field can be completed or not.
+   * @param {array} field A two-dimentional array representing the field.
+   * @param {number} height The height of the field.
+   * @param {number} width The width of the field.
+   * @return {boolean} true if it can be completed, false otherwise.
+   */
+  static validateField(field, height, width) {
+    const graph = new Graph(field);
+    const startNode = Field.findNodeForTile(
+        field,
+        height,
+        width,
+        pathCharacter);
+    const goalNode = Field.findNodeForTile(field, height, width, hat);
+    const paths = BreadthFirstSearch.traverseGraph(
+        graph,
+        startNode,
+        goalNode,
+        hole);
+    const path = BreadthFirstSearch.findPath(startNode, goalNode, paths);
+
+    return path.length > 0;
+  }
+
+  /**
+   * Finds the node that holds the tile in the field.
+   * @param {array} field The playing field.
+   * @param {number} height The height of the playing field array.
+   * @param {number} width The width of the playing field array.
+   * @param {string} tile The tile to find in the field.
+   * @return {Node} The node that holds the tile. Returns null if not found.
+   */
+  static findNodeForTile(field, height, width, tile) {
+    for (let row = 0; row < height; row++) {
+      for (let col = 0; col < width; col++) {
+        if (field[row][col] === tile) {
+          return new Node(row, col);
+        }
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -206,7 +266,7 @@ class GameLogic {
    * This method runs the game loop.
    */
   static run() {
-    const field = new Field(field1, true);
+    const field = new Field(GameLogic.generateField(), true);
     let gameOver = false;
     while (!gameOver) {
       field.print();
@@ -226,6 +286,25 @@ class GameLogic {
           break;
       }
     }
+  }
+
+  /**
+   * A method to randomly generate a new deterministic playing field.
+   * @return {array} The generated field.
+   */
+  static generateField() {
+    const height = Math.floor(Math.random() * fieldSizeMultiplier) +
+      fieldSizeOffset;
+    const width = Math.floor(Math.random() * fieldSizeMultiplier) +
+      fieldSizeOffset;
+    const percentageHoles = Math.floor(
+        Math.random() * percentageHolesMultiplier,
+    ) + percentageHolesOffset;
+    let field = Field.generateField(height, width, percentageHoles);
+    while (!Field.validateField(field, height, width)) {
+      field = Field.generateField(height, width, percentageHoles);
+    }
+    return field;
   }
 }
 
