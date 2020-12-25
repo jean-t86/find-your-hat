@@ -101,7 +101,7 @@ class BreadthFirstSearch {
    * @param {string} obstacleCharacter The character used as obstacle in the
    * graph.
    * @return {array} A dictionary array with keys in the format of
-   * Node.getNode(). Each value points to the key of the previously
+   * Node.getKey(). Each value points to the key of the previously
    * visited node in the graph.
    */
   static traverseGraph(graph, start, goal, obstacleCharacter) {
@@ -118,9 +118,9 @@ class BreadthFirstSearch {
 
       graph.getNeighbors(current).forEach((next) => {
         if (graph.valueAtNode(next) !== obstacleCharacter &&
-          typeof paths[next.getNode()] === 'undefined') {
+          typeof paths[next.getKey()] === 'undefined') {
           frontier.push(next);
-          paths[next.getNode()] = current;
+          paths[next.getKey()] = current;
         }
       });
     }
@@ -133,7 +133,7 @@ class BreadthFirstSearch {
    * @param {Node} start The starting node.
    * @param {Node} goal The goal node.
    * @param {array} paths A dictionary array with keys in the format of
-   * Node.getNode(). Each value points to the key of the previously
+   * Node.getKey(). Each value points to the key of the previously
    * visited node in the graph.
    * @return {array} The array of Nodes to through to reach the goal
    * from the starting node. If the array returned is empty, there
@@ -141,14 +141,14 @@ class BreadthFirstSearch {
    */
   static findPath(start, goal, paths) {
     const path = [];
-    if (typeof paths[goal.getNode()] === 'undefined') {
+    if (typeof paths[goal.getKey()] === 'undefined') {
       return path;
     }
 
     let current = goal;
     while (current != start) {
       path.push(current);
-      current = paths[current.getNode()];
+      current = paths[current.getKey()];
     }
     path.push(start);
 
@@ -156,7 +156,11 @@ class BreadthFirstSearch {
   }
 }
 
-export {Graph, Node, BreadthFirstSearch};
+module.exports = {
+  Graph,
+  Node,
+  BreadthFirstSearch,
+};
 
 /*
 // Usage:
@@ -172,7 +176,7 @@ const grid = [
 ];
 
 const startNode = new Node(2, 3);
-console.log(startNode.getNode());
+console.log(startNode.getKey());
 console.log(startNode.row);
 console.log(startNode.col);
 
