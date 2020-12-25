@@ -5,6 +5,7 @@
 * [Technologies](#technologies)
 * [Setup](#setup)
 * [Playing the game](#playing-the-game)
+* [Interesting code](#interesting-code)
 
 ## General Information
 This is a practice lab from the [Back-end Engineer path on Codecademy](https://www.codecademy.com/learn/paths/back-end-engineer-career-path). The course teaches all the major technologies and skills that a back-end engineer needs to know.
@@ -45,3 +46,8 @@ You can then enter a direction in which to move:
 * d - down
 * l - left
 * r - right
+
+## Interesting code
+In this project, of particular interest is the implementation of a [Breadth First Search algorigthm](https://github.com/jean-t86/find-your-hat/pull/5). 
+
+In a nutshell, the `Field.generateField` creates a random playing field, whereas `Field.validateField` makes sure that the playing field is a maze that can be solved by the user, i.e. is deterministic.
